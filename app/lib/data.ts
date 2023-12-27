@@ -1,25 +1,27 @@
 import pool from "./pool";
 import { unstable_noStore as noStore} from "next/cache";
 import { SalesTotalOverTime } from "./definitions";
+
+//Total Sales Over Time
 export async function fetchSalesTotalOverTime(): Promise<SalesTotalOverTime[]> {
      noStore();
-     console.log('Fetching SalesTotalOverTime data...');
+     console.log('Fetching SalesOverTime data...');
      try {
           const [rows] = await pool.query(`
           SELECT DATE_FORMAT(\`sales_date\`, '%Y-%m') AS date, SUM(\`sales_total\`) AS TotalSales
           FROM tomsms_db.t_sales_detail
           GROUP BY date
-          ORDER BY date
-          limit 20;
+          ORDER BY date;
      `) as unknown as [SalesTotalOverTime[]];
-     // console.log(rows);
      return rows;
      } catch (error) {
           console.error('Database Error:', error);
-    throw new Error('Failed to fetch revenue data.');
+    throw new Error('Failed to Sales over Time data.');
      }
    }
    
+
+//Total Cost Over Time
    export async function fetchCostsTotalOverTime(): Promise<any> {
      noStore();
      console.log('Fetching CostsTotalOverTime data...');
@@ -35,7 +37,7 @@ export async function fetchSalesTotalOverTime(): Promise<SalesTotalOverTime[]> {
      return rows;
      } catch (error) {
           console.error('Database Error:', error);
-    throw new Error('Failed to fetch revenue data.');
+    throw new Error('Failed to fetch CostsTotalOverTime data.');
      }
    }
    
@@ -68,11 +70,10 @@ export async function fetchSalesTotalOverTime(): Promise<SalesTotalOverTime[]> {
      console.log('Fetching SalesQuantityTotalOverTime data...');
      try {
           const [rows] = await pool.query(`
-          SELECT DATE_FORMAT(\`sales_date\`, '%Y-%m-%d') AS sales_date, SUM(\`sales_quantity\`) AS TotalQuantity
+          SELECT DATE_FORMAT(\`sales_date\`, '%Y-%m-%d') AS date, SUM(\`sales_quantity\`) AS TotalQuantity
           FROM tomsms_db.t_sales_detail
           GROUP BY \`sales_date\`
           ORDER BY \`sales_date\`
-          limit 20;
      `);
      // console.log(rows);
      return rows;
@@ -105,10 +106,10 @@ export async function fetchSalesTotalOverTime(): Promise<SalesTotalOverTime[]> {
 
    export async function fetchTotalTargetPerStaff(): Promise<any> {
      noStore();
-     console.log('Fetching SalesTotalOverTime data...');
+     console.log('Fetching TotalTargetPerStaff data...');
      try {
           const [rows] = await pool.query(`
-          SELECT staff_id as StaffID, SUM(target_price) as Totaltarget
+          SELECT staff_id as Staff_id, SUM(target_price) as Total_target
            FROM tomsms_db.t_salestarget_month
            GROUP BY staff_id
           ORDER BY staff_id;
@@ -117,7 +118,7 @@ export async function fetchSalesTotalOverTime(): Promise<SalesTotalOverTime[]> {
      return rows;
      } catch (error) {
           console.error('Database Error:', error);
-    throw new Error('Failed to fetch staff_targetmonth data.');
+    throw new Error('Failed to fetch TotalTargetPerStaff data.');
      }
    }
 
@@ -145,11 +146,10 @@ export async function fetchSalesTotalOverTime(): Promise<SalesTotalOverTime[]> {
      console.log('Fetching SalesQuantityTotalOverTime data...');
      try {
           const [rows] = await pool.query(`
-          SELECT DATE_FORMAT(\`sales_date\`, '%Y-%m-%d') AS sales_date, SUM(\`delivery_quantity\`) AS TotalDeliveryQuantity
+          SELECT DATE_FORMAT(\`sales_date\`, '%Y-%m-%d') AS date, SUM(\`delivery_quantity\`) AS TotalDeliveryQuantity
           FROM tomsms_db.t_sales_detail
           GROUP BY \`sales_date\`
           ORDER BY \`sales_date\`
-          limit 20;
      `);
      // console.log(rows);
      return rows;
@@ -265,3 +265,20 @@ export async function fetchComparisionChartData(): Promise<any> {
     throw new Error('Failed to fetch staff_targetmonth data.');
      }
    }
+
+   export async function fetchCardDetails() {
+     // Assuming you have a setup for connecting to your database
+     console.log('Fetching card Details...');
+     try {
+          const [rows] = await pool.query(`
+          SELECT SUM(sales_total) AS TotalSales,
+          SUM(abs(sales_total-cost_total)) AS TotalProfit,
+          SUM(sales_quantity) AS TotalSalesQuantity
+          FROM tomsms_db.t_sales_detail;
+          `);
+          return rows;
+     } catch (error) {
+          console.error('Database Error:', error);
+          throw new Error('Failed to fetch Sales Details.');
+     }
+}

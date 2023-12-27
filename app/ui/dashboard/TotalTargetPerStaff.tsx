@@ -15,10 +15,10 @@ export default function Totaltargetperstaff(props: any) {
             className="mt-6 h-96"
             data={props.data}
             showAnimation={true}
-            index="StaffID"
+            index="Staff_id"
             maxValue={1300000000}
             yAxisWidth={100}
-            categories={["Totaltarget", "StaffID"]}
+            categories={["Total_target", "Staff_id"]}
             colors={["emerald"]}
             //   valueFormatter={valueFormatter}
          />

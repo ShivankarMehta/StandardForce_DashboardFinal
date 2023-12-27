@@ -11,10 +11,11 @@ import {
    fetchgrossProfitDepartment,
    fetchstackedbarchart,
    fetchscatterplotedata,
-   fetchComparisionChartData
+   fetchComparisionChartData,
+   fetchCardDetails
    // fetchCumulativeData
 } from "../../lib/data";
-import AreaChartComponent from "../../ui/dashboard/AreaChart";
+import AreaChartComponent from "../../ui/dashboard/SalesTotal";
 import ExampleCard from "../../ui/dashboard/ExampleCard";
 import BarChartComponent from "@/app/ui/dashboard/BarChart";
 import SalesQuantityChartComponent from "@/app/ui/dashboard/SalesQuantityChart";
@@ -42,10 +43,16 @@ export default async function Home() {
    const  stackedbardata: any= await fetchstackedbarchart();
    const scatterplotdata:any= await fetchscatterplotedata();
    const comparisionbardata: any= await fetchComparisionChartData();
+   const carddata:any=await fetchCardDetails();
    // const cumulativechartdata:any=await fetchCumulativeData();
+   console.log(carddata[0].TotalSales);
    return (
       <div className="flex flex-col p-6 gap-2">
-         <ExampleCard />
+         <ExampleCard 
+         totalSales={carddata[0].TotalSales}
+         totalQuantity={carddata[0].TotalSalesQuantity}
+         totalProfit={carddata[0].TotalProfit}
+         />
          <div className="flex gap-2">
          <AreaChartComponent data={salesOverTimeData} />
          <CostTotal data={CostsTotalOverTimeData}/>
