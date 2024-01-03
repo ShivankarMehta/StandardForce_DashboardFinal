@@ -19,28 +19,6 @@ export async function fetchSalesTotalOverTime(): Promise<SalesTotalOverTime[]> {
     throw new Error('Failed to Sales over Time data.');
      }
    }
-   
-
-//Total Cost Over Time
-   export async function fetchCostsTotalOverTime(): Promise<any> {
-     noStore();
-     console.log('Fetching CostsTotalOverTime data...');
-     try {
-          const [rows] = await pool.query(`
-          SELECT DATE_FORMAT(\`sales_date\`, '%Y-%m') AS date, SUM(\`cost_total\`) AS TotalCosts
-          FROM tomsms_db.t_sales_detail
-          GROUP BY date
-          ORDER BY date
-          limit 20;
-     `)
-     // console.log(rows);
-     return rows;
-     } catch (error) {
-          console.error('Database Error:', error);
-    throw new Error('Failed to fetch CostsTotalOverTime data.');
-     }
-   }
-   
 
    export async function fetchTargetSalesTotalOverTime(): Promise<any> {
      noStore();
@@ -280,5 +258,25 @@ export async function fetchComparisionChartData(): Promise<any> {
      } catch (error) {
           console.error('Database Error:', error);
           throw new Error('Failed to fetch Sales Details.');
+     }
+}
+
+export async function fetchMixedPlot() {
+     // Assuming you have a setup for connecting to your database
+     console.log('Fetching main chart Details...');
+     try {
+          const [rows] = await pool.query(`
+          SELECT DATE_FORMAT(\`sales_date\`, '%Y-%m-%d') AS Sales_Date, 
+       SUM(sales_total) AS Total_Sales,
+       SUM(sales_total - cost_total) AS Total_Gross_Profit,
+       SUM(sales_total - cost_total) / SUM(sales_total) AS Overall_Gross_Profit_Rate
+       FROM tomsms_db.t_sales_detail
+       GROUP BY DATE_FORMAT(\`sales_date\`, '%Y-%m-%d')
+       LIMIT 15
+          `);
+          return rows;
+     } catch (error) {
+          console.error('Database Error:', error);
+          throw new Error('Failed to fetch main chart Details.');
      }
 }
