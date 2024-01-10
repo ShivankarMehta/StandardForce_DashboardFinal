@@ -18,7 +18,7 @@ export default function MainChartComponent(props) {
     const [options, setOptions] = useState<ApexOptions | null>(null);
 
     useEffect(() => {
-        if (props.data && props.data.length > 0) {
+        if (props.data && Array.isArray(props.data) && props.data.length > 0) {
             setSeries([
                 {
                     name: 'Total Sales',
@@ -34,6 +34,11 @@ export default function MainChartComponent(props) {
                     name: 'Total Sales Bar',
                     type: 'bar',
                     data: props.data.map(item => item.Total_Sales)
+                },
+                {
+                    name: 'Overall Gross Profit Rate',
+                    type: 'line',
+                    data: props.data.map(item => item.Overall_Gross_Profit_Rate)
                 },
                 // Add more series if needed
             ]);
@@ -59,11 +64,11 @@ export default function MainChartComponent(props) {
                     },
                     labels: {
                         formatter: function (val) {
-                            // Safely check if the value is not undefined or null before formatting
-                            return val != null ? `$${new Intl.NumberFormat().format(val)}` : '';
+                            return `$${new Intl.NumberFormat().format(val)}`;
                         }
                     }
-                },
+                }
+                ,
                 plotOptions: {
                     bar: {
                         horizontal: false, // Set to true for horizontal bars
@@ -71,7 +76,7 @@ export default function MainChartComponent(props) {
                         // Rounded edgs for the bars
                     }
                 },
-                colors: ['#5c5cd6', '#b3e6cc', '#ff9966'] // Adjust colors for each series
+                colors: ['#425af5', '#5442f5', '#f5426f', '#000000'] // Adjust colors for each series
             });
         }
     }, [props.data]);

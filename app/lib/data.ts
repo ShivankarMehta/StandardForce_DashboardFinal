@@ -272,7 +272,7 @@ export async function fetchMixedPlot() {
        SUM(sales_total - cost_total) / SUM(sales_total) AS Overall_Gross_Profit_Rate
        FROM tomsms_db.t_sales_detail
        GROUP BY DATE_FORMAT(\`sales_date\`, '%Y-%m-%d')
-       LIMIT 15
+       LIMIT 10
           `);
           return rows;
      } catch (error) {
