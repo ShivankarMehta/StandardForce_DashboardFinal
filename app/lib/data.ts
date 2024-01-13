@@ -266,12 +266,19 @@ export async function fetchMixedPlot() {
      console.log('Fetching main chart Details...');
      try {
           const [rows] = await pool.query(`
-          SELECT DATE_FORMAT(\`sales_date\`, '%Y-%m-%d') AS Sales_Date, 
-       SUM(sales_total) AS Total_Sales,
-       SUM(sales_total - cost_total) AS Total_Gross_Profit,
-       SUM(sales_total - cost_total) / SUM(sales_total) AS Overall_Gross_Profit_Rate
-       FROM tomsms_db.t_sales_detail
-       GROUP BY DATE_FORMAT(\`sales_date\`, '%Y-%m-%d')
+          SELECT 
+    DATE_FORMAT(\`sales_date\`, '%Y-%m-%d') AS Sales_Date,
+    SUM(sales_total) AS Total_Sales,
+    SUM(sales_total - cost_total) AS Total_Gross_Profit,
+    SUM(sales_total - cost_total) / SUM(sales_total) AS Overall_Gross_Profit_Rate
+FROM 
+    tomsms_db.t_sales_detail
+WHERE 
+    t_sales_detail.del_flg = 0
+    AND t_sales_detail.notdelivery_flg <> 2
+    AND t_sales_detail.sales_flg IS NOT NULL
+GROUP BY 
+    DATE_FORMAT(\`sales_date\`, '%Y-%m-%d')
        LIMIT 10
           `);
           return rows;
