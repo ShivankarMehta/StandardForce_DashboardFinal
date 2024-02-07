@@ -126,8 +126,10 @@ export async function fetchSalesTotalOverTime(): Promise<SalesTotalOverTime[]> {
           const [rows] = await pool.query(`
           SELECT DATE_FORMAT(\`sales_date\`, '%Y-%m-%d') AS date, SUM(\`delivery_quantity\`) AS TotalDeliveryQuantity
           FROM tomsms_db.t_sales_detail
+          WHERE \`sales_date\` <= CURDATE()
           GROUP BY \`sales_date\`
           ORDER BY \`sales_date\`
+          
      `);
      // console.log(rows);
      return rows;
@@ -143,9 +145,27 @@ export async function fetchSalesTotalOverTime(): Promise<SalesTotalOverTime[]> {
      console.log('Fetching SalesTotalOverTime data...');
      try {
           const [rows] = await pool.query(`
-          SELECT department_name as Department, standard_gross_profit_rate as GrossProfitRate
-         FROM tomsms_db.m_department
-         where standard_gross_profit_rate > 0; 
+          SELECT Department, GrossProfitRate
+FROM (
+    SELECT department_name as Department,
+           standard_gross_profit_rate as GrossProfitRate,
+           ROW_NUMBER() OVER (ORDER BY standard_gross_profit_rate DESC) as rn
+    FROM tomsms_db.m_department
+    WHERE standard_gross_profit_rate > 0
+) as ranked_departments
+WHERE rn <= 5
+
+UNION ALL
+
+SELECT 'Other' as Department, SUM(standard_gross_profit_rate) as GrossProfitRate
+FROM (
+    SELECT department_name,
+           standard_gross_profit_rate,
+           ROW_NUMBER() OVER (ORDER BY standard_gross_profit_rate DESC) as rn
+    FROM tomsms_db.m_department
+    WHERE standard_gross_profit_rate > 0
+) as ranked_departments
+WHERE rn > 5;
      `);
      // console.log(rows);
      return rows;
@@ -267,7 +287,7 @@ export async function fetchMixedPlot() {
      try {
           const [rows] = await pool.query(`
           SELECT 
-    DATE_FORMAT(\`sales_date\`, '%Y-%m-%d') AS Sales_Date,
+    DATE_FORMAT(\`sales_date\`, '%Y-%m') AS Sales_Month, 
     SUM(sales_total) AS Total_Sales,
     SUM(sales_total - cost_total) AS Total_Gross_Profit,
     SUM(sales_total - cost_total) / SUM(sales_total) AS Overall_Gross_Profit_Rate
@@ -277,9 +297,11 @@ WHERE
     t_sales_detail.del_flg = 0
     AND t_sales_detail.notdelivery_flg <> 2
     AND t_sales_detail.sales_flg IS NOT NULL
+    AND \`sales_date\` < DATE_ADD(LAST_DAY(CURDATE()), INTERVAL 1 DAY)
 GROUP BY 
-    DATE_FORMAT(\`sales_date\`, '%Y-%m-%d')
-       LIMIT 10
+    DATE_FORMAT(\`sales_date\`, '%Y-%m')
+ORDER BY 
+    Sales_Month;
           `);
           return rows;
      } catch (error) {

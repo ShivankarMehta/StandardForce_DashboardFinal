@@ -25,6 +25,8 @@ import ScatterChartPlot from "@/app/ui/dashboard/ScatterPlot";
 import CumulativeSales from "@/app/ui/dashboard/CumulativeSalesQuantity";
 import ComparisionBarChart from "@/app/ui/dashboard/ComparisionChartSales";
 import MainChartComponent from "@/app/ui/dashboard/Mainchart";
+import Logout from "@/app/components/logout";
+import Choropleth from "@/app/ui/dashboard/Choropleth";
 export default async function Home() {
    const salesOverTimeData: SalesTotalOverTime[] =
       await fetchSalesTotalOverTime();
@@ -39,9 +41,10 @@ export default async function Home() {
    const carddata:any=await fetchCardDetails();
    const mainchartdata:any=await fetchMixedPlot();
    // const cumulativechartdata:any=await fetchCumulativeData();
-   console.log(carddata[0].TotalSales);
+   console.log(grossprofitdepartmentData)
    return (
       <div className="flex flex-col p-6 gap-2">
+         <Logout />
          <ExampleCard 
          totalSales={carddata[0].TotalSales}
          totalQuantity={carddata[0].TotalSalesQuantity}
@@ -49,19 +52,18 @@ export default async function Home() {
          />
          <AreaChartComponent data={salesOverTimeData} />
          {/* <AreaChartComponent data={salesTargetStaff} /> */}
-         <BarChartComponent data={salesTargetStaff} />
-         <div className="flex gap-2">
+         {/* <BarChartComponent data={salesTargetStaff} /> */}
          <DelieveryQuantityChartComponent data={delieveryQuantityOverTime}/>
          <SalesQuantityChartComponent data={SalesQuantityOverTime} />
-         </div>
          <GrossProfitDepartment data={grossprofitdepartmentData}/>
-         <StackedBarChart data={stackedbardata} />
+         {/* <StackedBarChart data={stackedbardata} /> */}
          <ComparisionBarChart data={comparisionbardata}/>
          {/* <CumulativeSales data={cumulativechartdata}/> */}
          {/* <ScatterChartPlot data={scatterplotdata} /> */}
          {/* <DonutCharttarget data={donutCharttargetData}/> */}
          {/* <LChart data={salesOverTimeData} /> */}
          <MainChartComponent data={mainchartdata}/>
+         <Choropleth dashboard={false} />
       </div>
    );
 }

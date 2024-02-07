@@ -106,72 +106,161 @@
 // }
 
 
+// 'use client'
+// import React, { useState, useMemo } from 'react';
+// import { DeliveryQuantityOverTime } from "@/app/lib/definitions";
+// import { AreaChart, Card, Title } from "@tremor/react";
+// import ReactSlider from 'react-slider';
+// import './../styles/slider.css';
+
+// type MyComponentProps = {
+//    data: DeliveryQuantityOverTime[];
+// };
+
+// export default function DelieveryQuantityChartComponent({ data }: MyComponentProps) {
+//    // Extract unique years from the data
+//    const years = useMemo(() => {
+//       const uniqueYears = new Set(data.map(item => {
+//          const dateStr = item.date instanceof Date ? item.date.getFullYear() : parseInt(item.date.split('-')[0], 10);
+//          return dateStr;
+//        }));
+//        return Array.from(uniqueYears).sort((a, b) => a - b);
+//      }, [data]);
+
+//    const [yearRange, setYearRange] = useState([years[0], years[years.length - 1]]);
+
+//    // Filter data based on selected year range
+//    const filteredData = useMemo(() => {
+//       return data.filter(item => {
+//          const year = item.date instanceof Date ? item.date.getFullYear() : parseInt(item.date.split('-')[0], 10);
+//          return year >= yearRange[0] && year <= yearRange[1];
+//        });
+//      }, [data, yearRange]);
+
+//    const yearLabels = years.map(year => (
+//       <div key={year} className="year-label" style={{ left: `${((year - years[0]) / (years[years.length - 1] - years[0])) * 100}%` }}>
+//         {year}
+//       </div>
+//     ));
+
+//    return (
+//       <Card>
+//          <Title>Delivery Quantity Over Time</Title>
+//          <div className='slider-container'>
+//             <ReactSlider
+//               className="horizontal-slider"
+//               thumbClassName="thumb"
+//               trackClassName="track"
+//               defaultValue={[yearRange[0], yearRange[1]]}
+//               ariaLabel={['Lower thumb', 'Upper thumb']}
+//               ariaValuetext={state => `Year range between ${state[0]} and ${state[1]}`}
+//               onChange={values => setYearRange(values)}
+//               min={years[0]}
+//               max={years[years.length - 1]}
+//               minDistance={0}
+//             />
+//             <div className="year-labels">{yearLabels}</div>
+//          </div>
+//          <AreaChart
+//             className="h-96 mt-4"
+//             showAnimation={true}
+//             data={filteredData}
+//             autoMinValue={true}
+//             maxValue={360000}
+//             yAxisWidth={100}
+//             index="date"
+//             categories={["Date", "TotalDeliveryQuantity"]}
+//             colors={["cyan","indigo"]}
+//          />
+//       </Card>
+//    );
+// }
+
+
 'use client'
 import React, { useState, useMemo } from 'react';
 import { DeliveryQuantityOverTime } from "@/app/lib/definitions";
 import { AreaChart, Card, Title } from "@tremor/react";
 import ReactSlider from 'react-slider';
-import './../styles/slider.css';
+import './../styles/slider.css'; // Ensure this file contains custom styles for ReactSlider
 
 type MyComponentProps = {
    data: DeliveryQuantityOverTime[];
 };
 
-export default function DelieveryQuantityChartComponent({ data }: MyComponentProps) {
-   // Extract unique years from the data
-   const years = useMemo(() => {
-      const uniqueYears = new Set(data.map(item => {
-         const dateStr = item.date instanceof Date ? item.date.getFullYear() : parseInt(item.date.split('-')[0], 10);
-         return dateStr;
-       }));
-       return Array.from(uniqueYears).sort((a, b) => a - b);
-     }, [data]);
+export default function DeliveryQuantityChartComponent({ data }: MyComponentProps) {
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-   const [yearRange, setYearRange] = useState([years[0], years[years.length - 1]]);
+    // Extract unique years from the data
+    const years = useMemo(() => {
+        const uniqueYears = new Set(data.map(item => {
+            const date = item.date instanceof Date ? item.date : new Date(item.date);
+            return date.getFullYear();
+        }));
+        return Array.from(uniqueYears).sort((a, b) => a - b);
+    }, [data]);
 
-   // Filter data based on selected year range
-   const filteredData = useMemo(() => {
-      return data.filter(item => {
-         const year = item.date instanceof Date ? item.date.getFullYear() : parseInt(item.date.split('-')[0], 10);
-         return year >= yearRange[0] && year <= yearRange[1];
-       });
-     }, [data, yearRange]);
+    const [selectedYear, setSelectedYear] = useState(years[0]);
+    const [monthRange, setMonthRange] = useState([0, 11]);
 
-   const yearLabels = years.map(year => (
-      <div key={year} className="year-label" style={{ left: `${((year - years[0]) / (years[years.length - 1] - years[0])) * 100}%` }}>
-        {year}
-      </div>
-    ));
+    // Filter data based on selected year and month range
+    const filteredData = useMemo(() => {
+        return data.filter(item => {
+            const date = item.date instanceof Date ? item.date : new Date(item.date);
+            const year = date.getFullYear();
+            const month = date.getMonth(); // getMonth() is zero-indexed
+            return year === selectedYear && month >= monthRange[0] && month <= monthRange[1];
+        });
+    }, [data, selectedYear, monthRange]);
 
-   return (
-      <Card>
-         <Title>Delivery Quantity Over Time</Title>
-         <div className='slider-container'>
-            <ReactSlider
-              className="horizontal-slider"
-              thumbClassName="thumb"
-              trackClassName="track"
-              defaultValue={[yearRange[0], yearRange[1]]}
-              ariaLabel={['Lower thumb', 'Upper thumb']}
-              ariaValuetext={state => `Year range between ${state[0]} and ${state[1]}`}
-              onChange={values => setYearRange(values)}
-              min={years[0]}
-              max={years[years.length - 1]}
-              minDistance={0}
+    return (
+        <Card>
+            <Title>Delivery Quantity Over Time</Title>
+            <div className="flex flex-col space-y-4 text-left my-5">
+                <div className="border-2 w-20">
+                    <select
+                        value={selectedYear}
+                        onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                        className="form-select block w-full mt-1"
+                    >
+                        {years.map(year => (
+                            <option key={year} value={year}>
+                                {year}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="slider-with-months w-full">
+                    <ReactSlider
+                        className="horizontal-slider"
+                        thumbClassName="thumb"
+                        trackClassName="track"
+                        value={[monthRange[0], monthRange[1]]}
+                        ariaLabel={['Lower thumb', 'Upper thumb']}
+                        ariaValuetext={state => `Month range between ${months[state.value[0]]} and ${months[state.value[1]]}`}
+                        onChange={values => setMonthRange(values)}
+                        min={0}
+                        max={11}
+                        minDistance={1}
+                    />
+                    <div className="month-labels flex justify-between mt-2">
+                        {months.map((month, index) => (
+                            <div key={index} className="text-xs text-center">{month}</div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+            <AreaChart
+                className="h-96 mt-4"
+                showAnimation={true}
+                data={filteredData}
+                autoMinValue={true}
+                maxValue={360000}
+                yAxisWidth={100}
+                index="date"
+                categories={["Date", "TotalDeliveryQuantity"]}
+                colors={["cyan","indigo"]}
             />
-            <div className="year-labels">{yearLabels}</div>
-         </div>
-         <AreaChart
-            className="h-96 mt-4"
-            showAnimation={true}
-            data={filteredData}
-            autoMinValue={true}
-            maxValue={360000}
-            yAxisWidth={100}
-            index="date"
-            categories={["Date", "TotalDeliveryQuantity"]}
-            colors={["cyan","indigo"]}
-         />
-      </Card>
-   );
+        </Card>
+    );
 }

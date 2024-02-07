@@ -3,6 +3,8 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 //login Page 
@@ -17,16 +19,17 @@ export default function LoginPage() {
    //  const [buttonDisabled, setButtonDisabled] = React.useState(false);
    const [loading, setLoading] = useState(false);
 
-
    const onLogin = async () => {
       try {
          setLoading(true);
          console.log(user);
          const response = await axios.post("/api/login", user);
          console.log("Login success", response.data);
+         toast.success("Login Sucessful ");
          router.push("/dashboard");
       } catch (error: any) {
-         console.log("Login failed", error.message);
+         toast.error(error.response.data.message);
+         console.log("Login failed", error.response.data.message);
       } finally {
          setLoading(false);
       }
@@ -63,6 +66,7 @@ export default function LoginPage() {
          <button
             onClick={onLogin}
             className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">Login</button>
+            <ToastContainer />
          <Link href="/signup">Visit Signup page</Link>
       </div>
    )
