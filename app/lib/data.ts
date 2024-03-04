@@ -4,7 +4,7 @@ import { SalesTotalOverTime } from "./definitions";
 
 //Total Sales Over Time
 export async function fetchSalesTotalOverTime(): Promise<SalesTotalOverTime[]> {
-     noStore();
+     // noStore();
      console.log('Fetching SalesOverTime data...');
      try {
           const [rows] = await pool.query(`
@@ -21,7 +21,7 @@ export async function fetchSalesTotalOverTime(): Promise<SalesTotalOverTime[]> {
    }
 
    export async function fetchTargetSalesTotalOverTime(): Promise<any> {
-     noStore();
+     // noStore();
      console.log('Fetching SalesTotalOverTime data...');
      try {
           const [rows] = await pool.query(`
@@ -44,7 +44,7 @@ export async function fetchSalesTotalOverTime(): Promise<SalesTotalOverTime[]> {
    }
    
    export async function fetchSalesQuantityOverTime(): Promise<any> {
-     noStore();
+     // noStore();
      console.log('Fetching SalesQuantityTotalOverTime data...');
      try {
           const [rows] = await pool.query(`
@@ -64,7 +64,7 @@ export async function fetchSalesTotalOverTime(): Promise<SalesTotalOverTime[]> {
    
 
    export async function fetchTargetTimeSeries(): Promise<any> {
-     noStore();
+     // noStore();
      console.log('Fetching TargetoverTimeSeries data...');
      try {
           const [rows] = await pool.query(`
@@ -83,7 +83,7 @@ export async function fetchSalesTotalOverTime(): Promise<SalesTotalOverTime[]> {
    
 
    export async function fetchTotalTargetPerStaff(): Promise<any> {
-     noStore();
+     // noStore();
      console.log('Fetching TotalTargetPerStaff data...');
      try {
           const [rows] = await pool.query(`
@@ -101,7 +101,7 @@ export async function fetchSalesTotalOverTime(): Promise<SalesTotalOverTime[]> {
    }
 
    export async function fetchTargetPerStaffDounut(): Promise<any> {
-     noStore();
+     // noStore();
      console.log('Fetching SalesTotalOverTime data...');
      try {
           const [rows] = await pool.query(`
@@ -120,7 +120,7 @@ export async function fetchSalesTotalOverTime(): Promise<SalesTotalOverTime[]> {
 
 
    export async function fetchDelieveryQuantityOverTime(): Promise<any> {
-     noStore();
+     // noStore();
      console.log('Fetching SalesQuantityTotalOverTime data...');
      try {
           const [rows] = await pool.query(`
@@ -141,7 +141,7 @@ export async function fetchSalesTotalOverTime(): Promise<SalesTotalOverTime[]> {
 
 
    export async function fetchgrossProfitDepartment(): Promise<any> {
-     noStore();
+     // noStore();
      console.log('Fetching SalesTotalOverTime data...');
      try {
           const [rows] = await pool.query(`
@@ -176,7 +176,7 @@ WHERE rn > 5;
    }
 
    export async function fetchstackedbarchart(): Promise<any> {
-     noStore();
+     // noStore();
      console.log('Fetching SalesTotalOverTime data...');
      try {
           const [rows] = await pool.query(`
@@ -209,7 +209,7 @@ ORDER BY
    }
 
    export async function fetchscatterplotedata(): Promise<any> {
-     noStore();
+     // noStore();
      console.log('Fetching SalesTotalOverTime data...');
      try {
           const [rows] = await pool.query(`
@@ -246,7 +246,7 @@ ORDER BY
 
 
 export async function fetchComparisionChartData(): Promise<any> {
-     noStore();
+     // noStore();
      console.log('Fetching Sales data...');
      try {
           const [rows] = await pool.query(`
@@ -307,5 +307,21 @@ ORDER BY
      } catch (error) {
           console.error('Database Error:', error);
           throw new Error('Failed to fetch main chart Details.');
+     }
+}
+
+export async function fetchMapData(){
+     console.log('Fetching Map data...');
+   try {
+      const [locations] = await pool.query(`
+         SELECT id, latitude_world, longitude_world
+         FROM m_customer
+         WHERE latitude_world IS NOT NULL AND longitude_world IS NOT NULL
+      `);
+      console.log(locations   )
+      return locations;
+     } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch Map Data');
      }
 }
