@@ -11,6 +11,7 @@ import {
   fetchComparisionChartData,
   fetchCardDetails,
   fetchMixedPlot,
+  fetchMonthlySalesComparison,
   fetchMapData,
   // fetchCumulativeData
 } from "../../lib/data";
@@ -28,6 +29,7 @@ import ComparisionBarChart from "@/app/ui/dashboard/ComparisionChartSales";
 import MainChartComponent from "@/app/ui/dashboard/Mainchart";
 import Logout from "@/app/components/logout";
 import MapComponent from "@/app/ui/dashboard/MapComponents/Map";
+import SalesComparison from "@/app/ui/dashboard/SalesComparison";
 // import Choropleth from "@/app/ui/dashboard/Choropleth";
 export default async function Home() {
   const salesOverTimeData: SalesTotalOverTime[] =
@@ -43,6 +45,7 @@ export default async function Home() {
   const carddata: any = await fetchCardDetails();
   const mainchartdata: any = await fetchMixedPlot();
   const MapData: any = await fetchMapData();
+  const monthlysalesdata: any = await fetchMonthlySalesComparison();
   // const cumulativechartdata:any=await fetchCumulativeData();
   console.log(grossprofitdepartmentData);
   return (
@@ -67,6 +70,7 @@ export default async function Home() {
       {/* <LChart data={salesOverTimeData} /> */}
       <MainChartComponent data={mainchartdata} />
       {/* <Choropleth dashboard={false} /> */}
+      <SalesComparison data={monthlysalesdata} />
       <MapComponent data={MapData} token={process.env.MAP_BOX_TOKEN} />
     </div>
   );

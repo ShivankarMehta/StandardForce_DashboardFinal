@@ -325,3 +325,29 @@ export async function fetchMapData(){
       throw new Error('Failed to fetch Map Data');
      }
 }
+
+export async function fetchMonthlySalesComparison() {
+     console.log('Fetching monthly sales comparison over three years...');
+     try {
+         const [rows] = await pool.query(`
+         SELECT 
+    YEAR(sales_date) AS Year,
+    MONTH(sales_date) AS Month,
+    SUM(sales_total) AS Total_Sales
+FROM 
+    tomsms_db.t_sales_detail
+WHERE 
+    del_flg = 0
+    AND notdelivery_flg <> 2
+    AND sales_flg IS NOT NULL
+GROUP BY 
+    Year, Month
+ORDER BY 
+    Year, Month;
+         `);
+         return rows;
+     } catch (error) {
+         console.error('Database Error:', error);
+         throw new Error('Failed to fetch monthly sales comparison.');
+     }
+ }
