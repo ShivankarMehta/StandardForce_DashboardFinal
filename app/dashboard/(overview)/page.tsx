@@ -47,7 +47,7 @@ export default async function Home() {
   const MapData: any = await fetchMapData();
   const monthlysalesdata: any = await fetchMonthlySalesComparison();
   // const cumulativechartdata:any=await fetchCumulativeData();
-  console.log(grossprofitdepartmentData);
+  // console.log(grossprofitdepartmentData);
   return (
     <div className="flex flex-col p-4 gap-4">
       <Logout />

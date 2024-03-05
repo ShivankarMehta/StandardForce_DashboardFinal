@@ -10,13 +10,17 @@ import {
   unclusteredPointLayer,
 } from "./layers";
 
+interface GeoJsonType {
+  type: string;
+  features: Array<any>; // Replace any with the actual type of your features
+}
 export default function MapComponent({ data, token }: any) {
-  console.log(token);
+  // console.log(token);
   const mapRef: any = React.useRef(null);
 
   const onClick = (event) => {
     const feature: any = event.features[0];
-    console.log(feature);
+    // console.log(feature);
     const clusterId: any = feature.properties.cluster_id;
 
     const mapboxSource: any = mapRef.current.getSource("customers");
@@ -34,7 +38,7 @@ export default function MapComponent({ data, token }: any) {
     });
   };
 
-  const [geoJson, setGeoJson] = useState(null);
+  const [geoJson, setGeoJson] = useState<GeoJsonType | null>(null);
   useEffect(() => {
     setGeoJson({
       type: "FeatureCollection",
@@ -50,7 +54,7 @@ export default function MapComponent({ data, token }: any) {
         },
       })),
     });
-  }, []);
+  }, [data]);
   return (
     <div className="w-auto h-96">
       <Map
@@ -62,7 +66,7 @@ export default function MapComponent({ data, token }: any) {
         }}
         ref={mapRef}
         onClick={onClick}
-        interactiveLayerIds={[clusterLayer.id]}
+        interactiveLayerIds={clusterLayer.id ? [clusterLayer.id] : []}
         style={{ width: "100%", height: "100%", borderRadius: "8px" }}
         mapStyle="mapbox://styles/mapbox/satellite-streets-v12"
       >
@@ -72,7 +76,14 @@ export default function MapComponent({ data, token }: any) {
           clusterMaxZoom={14}
           clusterRadius={50}
           type="geojson"
-          data={geoJson}
+          data={
+            geoJson
+              ? {
+                  type: "FeatureCollection",
+                  features: geoJson.features,
+                }
+              : undefined
+          }
         >
           <Layer {...clusterLayer} />
           <Layer {...clusterCountLayer} />
