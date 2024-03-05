@@ -1,7 +1,10 @@
+import translate from "translate";
+
 export const translateAndCapitalize = (text) => {
   return new Promise((resolve) => {
     // Check if text is empty or null, and return "Nagasaki" if true
     if (!text) {
+      console.log("I am here");
       resolve("Nagasaki");
       return;
     }
