@@ -318,7 +318,7 @@ export async function fetchMapData(){
          FROM m_customer
          WHERE latitude_world IS NOT NULL AND longitude_world IS NOT NULL
       `);
-      console.log(locations   )
+     //  console.log(locations)
       return locations;
      } catch (error) {
       console.error('Database Error:', error);

@@ -105,114 +105,114 @@
 // };
 
 // export default MapChart;
-"use client";
-// https://github.com/CodingWith-Adam/geoJson-map-with-react-leaflet/blob/master/src/components/MyMap.jsx
-import React, { useState, useEffect, ChangeEvent } from "react";
-import {
-  MapContainer,
-  GeoJSON,
-  TileLayer,
-  GeoJSONProps,
-  useMap,
-} from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import japanMapData from "../../data/gadm41_JPN_1.json"; // Update this path
-import L, { Layer } from "leaflet";
+// "use client";
+// // https://github.com/CodingWith-Adam/geoJson-map-with-react-leaflet/blob/master/src/components/MyMap.jsx
+// import React, { useState, useEffect, ChangeEvent } from "react";
+// import {
+//   MapContainer,
+//   GeoJSON,
+//   TileLayer,
+//   GeoJSONProps,
+//   useMap,
+// } from "react-leaflet";
+// import "leaflet/dist/leaflet.css";
+// import japanMapData from "../../data/gadm41_JPN_1.json"; // Update this path
+// import L, { Layer } from "leaflet";
 
-// If necessary, define a type for the properties of your GeoJSON features
-type GeoJSONFeatureProperties = {
-  NAME_1: string; // Adjust based on your GeoJSON properties
-};
+// // If necessary, define a type for the properties of your GeoJSON features
+// type GeoJSONFeatureProperties = {
+//   NAME_1: string; // Adjust based on your GeoJSON properties
+// };
 
-const SetView = ({
-  center,
-  zoom,
-}: {
-  center: L.LatLngExpression;
-  zoom: number;
-}) => {
-  const map = useMap();
-  useEffect(() => {
-    map.setView(center, zoom);
-  }, [center, zoom, map]);
+// const SetView = ({
+//   center,
+//   zoom,
+// }: {
+//   center: L.LatLngExpression;
+//   zoom: number;
+// }) => {
+//   const map = useMap();
+//   useEffect(() => {
+//     map.setView(center, zoom);
+//   }, [center, zoom, map]);
 
-  return null;
-};
+//   return null;
+// };
 
-interface MyMapProps {
-  dashboard: boolean;
-}
+// interface MyMapProps {
+//   dashboard: boolean;
+// }
 
-const Choropleth: React.FC<MyMapProps> = ({ dashboard }) => {
-  const [color, setColor] = useState<string>("#ffff00");
-  const [center, setCenter] = useState<L.LatLngExpression>([36.2048, 138.2529]);
-  const [zoom, setZoom] = useState<number>(5);
+// const Choropleth: React.FC<MyMapProps> = ({ dashboard }) => {
+//   const [color, setColor] = useState<string>("#ffff00");
+//   const [center, setCenter] = useState<L.LatLngExpression>([36.2048, 138.2529]);
+//   const [zoom, setZoom] = useState<number>(5);
 
-  useEffect(() => {
-    console.log(japanMapData);
-  }, []);
+//   useEffect(() => {
+//     console.log(japanMapData);
+//   }, []);
 
-  const countryStyle: L.PathOptions = {
-    fillColor: "red",
-    fillOpacity: 1,
-    color: "black",
-    weight: 2,
-  };
+//   const countryStyle: L.PathOptions = {
+//     fillColor: "red",
+//     fillOpacity: 1,
+//     color: "black",
+//     weight: 2,
+//   };
 
-  const changeCountryColor = (event: L.LayerEvent) => {
-    const layer = event.target as L.Path;
-    layer.setStyle({
-      color: "green",
-      fillColor: color,
-      fillOpacity: 1,
-    });
-  };
+//   const changeCountryColor = (event: L.LayerEvent) => {
+//     const layer = event.target as L.Path;
+//     layer.setStyle({
+//       color: "green",
+//       fillColor: color,
+//       fillOpacity: 1,
+//     });
+//   };
 
-  const onEachCountry = (
-    country: GeoJSON.Feature<GeoJSON.Geometry, GeoJSONFeatureProperties>,
-    layer: Layer
-  ) => {
-    const countryName = country.properties.NAME_1; // Adjust based on Japan GeoJSON properties
-    console.log(countryName);
-    layer.bindPopup(countryName);
+//   const onEachCountry = (
+//     country: GeoJSON.Feature<GeoJSON.Geometry, GeoJSONFeatureProperties>,
+//     layer: Layer
+//   ) => {
+//     const countryName = country.properties.NAME_1; // Adjust based on Japan GeoJSON properties
+//     console.log(countryName);
+//     layer.bindPopup(countryName);
 
-    layer.options.fillOpacity = Math.random(); // Example randomness, adjust as needed
+//     layer.options.fillOpacity = Math.random(); // Example randomness, adjust as needed
 
-    (layer as L.Path).on({
-      click: changeCountryColor,
-    });
-  };
+//     (layer as L.Path).on({
+//       click: changeCountryColor,
+//     });
+//   };
 
-  const colorChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setColor(event.target.value);
-  };
+//   const colorChange = (event: ChangeEvent<HTMLInputElement>) => {
+//     setColor(event.target.value);
+//   };
 
-  return (
-    <div>
-      {dashboard ? (
-        <h1 style={{ textAlign: "center", marginTop: "1rem" }}>
-          Customer Conventration in Regieon
-        </h1>
-      ) : (
-        <></>
-      )}
+//   return (
+//     <div>
+//       {dashboard ? (
+//         <h1 style={{ textAlign: "center", marginTop: "1rem" }}>
+//           Customer Conventration in Regieon
+//         </h1>
+//       ) : (
+//         <></>
+//       )}
 
-      <MapContainer
-        style={{ height: "80vh", borderRadius: "20px" }}
-        // center={center}
-        // zoom={zoom}
-      >
-        <SetView center={center} zoom={zoom} />
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        <GeoJSON
-          style={countryStyle}
-          data={japanMapData.features}
-          onEachFeature={onEachCountry as any} // Casting as any to avoid type mismatch
-        />
-      </MapContainer>
-      {/* <input type="color" value={color} onChange={colorChange} /> */}
-    </div>
-  );
-};
+//       <MapContainer
+//         style={{ height: "80vh", borderRadius: "20px" }}
+//         // center={center}
+//         // zoom={zoom}
+//       >
+//         <SetView center={center} zoom={zoom} />
+//         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+//         <GeoJSON
+//           style={countryStyle}
+//           data={japanMapData.features}
+//           onEachFeature={onEachCountry as any} // Casting as any to avoid type mismatch
+//         />
+//       </MapContainer>
+//       {/* <input type="color" value={color} onChange={colorChange} /> */}
+//     </div>
+//   );
+// };
 
-export default Choropleth;
+// export default Choropleth;
