@@ -1,0 +1,69 @@
+.slider-container {
+    position: relative;
+    padding: 0px 15px;
+    padding-top: 20px;
+    margin-top: 20px;
+    margin-bottom: 40px;
+    border: 2px solid #7cb5ec;
+  }
+  
+  .horizontal-slider {
+    width: 100%;
+    height: 40px; /* Adjust the height of the slider track */
+  }
+  
+  .track {
+    background: #ddd; /* Color of the track */
+    height: 4px; /* Height of the track */
+    position: relative;
+    top: 10px; /* Adjust this to vertically center the track */
+    border-radius: 5px;
+  }
+  
+  .thumb {
+    height: 20px; /* Height of the thumb */
+    width: 20px; /* Width of the thumb */
+    background-color: rgb(40, 40, 138); /* Color of the thumb */
+    border-radius: 50%; /* Make the thumb circular */
+    cursor: grab;
+    transition: background-color 0.3s ease; /* Smooth transition for thumb background color */
+  }
+  
+  .thumb:hover,
+  .thumb:active {
+    background-color: #428bca; /* Change color on hover/active */
+    cursor: grabbing;
+  }
+  
+  .react-slider__track-0 {
+    background: #7cb5ec; /* Color of the lower range of the track */
+  }
+  
+  .year-labels {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    width: calc(100% - 30px); /* Adjust width based on padding of .slider-container */
+    bottom: -10px; /* Adjust distance from the slider */
+  }
+  
+  .year-label {
+    position: absolute;
+    color: #666;
+    text-align: center;
+    transform: translateX(-50%); /* Center the labels */
+    font-size: 12px;
+  }
+  
+  /* Additional styling for the labels */
+  .year-label::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    width: 2px;
+    height: 10px;
+    background-color: #ccc;
+    transform: translateX(-50%);
+  }
+  
