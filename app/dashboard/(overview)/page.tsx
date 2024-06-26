@@ -1,5 +1,12 @@
 import { Card } from "@tremor/react";
 import {
+   Accordion,
+   AccordionBody,
+   AccordionHeader,
+   AccordionList,
+ } from '@tremor/react';
+ 
+import {
    fetchSalesQuantityOverTime,
    fetchSalesTotalOverTime,
    fetchTargetSalesTotalOverTime,
@@ -60,6 +67,12 @@ import DepartmentSalesComponent from "@/app/ui/dashboard/DepartmentSalesProfit";
 import DepartmentSalesComponentBar from "@/app/ui/dashboard/Barcharts/DepartmentprofitBar";
 import DepartmentSalesComponentPie from "@/app/ui/dashboard/Piecharts/DepartmentProfitPie";
 import DepartmentTableComponent from "@/app/ui/dashboard/Tables/DepartmentTable";
+import DepartmentSalesComponentLine from "@/app/ui/dashboard/Linecharts/DepartmentProfitLine";
+import CustomerSalesComponentLine from "@/app/ui/dashboard/Linecharts/CustomerProfitLine";
+import ConstructionSalesComponentLine from "@/app/ui/dashboard/Linecharts/ConstructionProfitLine";
+import MatterSalesComponentLine from "@/app/ui/dashboard/Linecharts/MatterProfitLine";
+import StaffSalesComponentLine from "@/app/ui/dashboard/Linecharts/StaffProfitLine";
+import ConstructionSalesComponentRadial from "@/app/ui/dashboard/Radialbarcharts/ConstructionProfitRadial";
 export default async function Home() {
    const salesOverTimeData: any =
       await fetchSalesTotalOverTime();
@@ -126,42 +139,173 @@ export default async function Home() {
          <Card className="space-y-4 bg-gray-400">
          <Choropleth dashboard={false} />
          </Card>
+
+
+         {/* Department */}
          <Card className="space-y-4 bg-gray-400">
          <Header title="Department vs Total Profit"/>
+         <AccordionList>
+         <Accordion>
+         <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">Area Chart</AccordionHeader>
+         <AccordionBody className="leading-6">
          <DepartmentSalesComponent data={departmentsalesdata}/>
+         </AccordionBody>
+         </Accordion>
+         <Accordion>
+         <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">Line Chart</AccordionHeader>
+         <AccordionBody className="leading-6">
+         <DepartmentSalesComponentLine data={departmentsalesdata}/>
+         </AccordionBody>
+         </Accordion>
+         <Accordion>
+         <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">Bar Chart</AccordionHeader>
+         <AccordionBody className="leading-6">
          <DepartmentSalesComponentBar data={departmentsalesdata} />
+         </AccordionBody>
+         </Accordion>
+         <Accordion>
+         <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">Pie Chart</AccordionHeader>
+         <AccordionBody className="leading-6">
          <DepartmentSalesComponentPie data={departmentsalesdata} />
+         </AccordionBody>
+         </Accordion>
+         </AccordionList>
          <DepartmentTableComponent data={departmentsalesdata}/>
          </Card>
+
+         {/* customer */}
          <Card className="space-y-4 bg-gray-400">
          <Header title="Customer vs Total Profit"/>
+         <AccordionList>
+         <Accordion>
+         <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">Area Chart</AccordionHeader>
+         <AccordionBody className="leading-6">
          <CustomerSalesComponent data={customersalesdata}/>
+         </AccordionBody>
+         </Accordion>
+         <Accordion>
+         <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">Line Chart</AccordionHeader>
+         <AccordionBody className="leading-6">
+         <CustomerSalesComponentLine data={customersalesdata}/>
+         </AccordionBody>
+         </Accordion>
+         <Accordion>
+         <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">Bar Chart</AccordionHeader>
+         <AccordionBody className="leading-6">
          <CustomerSalesComponentBar data={customersalesdata}/>
+         </AccordionBody>
+         </Accordion>
+         <Accordion>
+         <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">Pie Chart</AccordionHeader>
+         <AccordionBody className="leading-6">
          <CustomerSalesComponentPie data={customersalesdata} />
+         </AccordionBody>
+         </Accordion>
+         </AccordionList>
          <CustomersTableComponent data={customersalesdata}/>
          </Card>
+
+         {/* Matter */}
+
          <Card className="space-y-4 bg-gray-400">
          <Header title="Matter vs Total Profit"/>
+         <AccordionList>
+         <Accordion>
+         <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">Area Chart</AccordionHeader>
+         <AccordionBody className="leading-6">
          <MatterSalesComponent data={mattersalesdata}/>
+         </AccordionBody>
+         </Accordion>
+         <Accordion>
+         <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">Line Chart</AccordionHeader>
+         <AccordionBody className="leading-6">
+         <MatterSalesComponentLine data={mattersalesdata}/>
+         </AccordionBody>
+         </Accordion>
+         <Accordion>
+         <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">Bar Chart</AccordionHeader>
+         <AccordionBody className="leading-6">
          <MatterSalesComponentBar data={mattersalesdata}/>
+         </AccordionBody>
+         </Accordion>
+         <Accordion>
+         <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">Pie Chart</AccordionHeader>
+         <AccordionBody className="leading-6">
          <MatterSalesComponentPie data={mattersalesdata}/>
+         </AccordionBody>
+         </Accordion>
+         </AccordionList>
          <MattersTableComponent data={mattersalesdata}/>
          </Card>
+
+
+         {/* construction */}
+
          <Card className="space-y-4 bg-gray-400">
          <Header title="Construction Sites vs Total Profit"/>
+         <AccordionList>
+         <Accordion>
+         <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">Area Chart</AccordionHeader>
+         <AccordionBody className="leading-6">
          <ConstructionSalesComponent data={constructionsalesdata}/>
+         </AccordionBody>
+         </Accordion>
+         <Accordion>
+         <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">Line Chart</AccordionHeader>
+         <AccordionBody className="leading-6">
+         <ConstructionSalesComponentLine data={constructionsalesdata}/>
+         </AccordionBody>
+         </Accordion>
+         <Accordion>
+         <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">Bar Chart</AccordionHeader>
+         <AccordionBody className="leading-6">
          <ConstructionSalesComponentBar data={constructionsalesdata}/>
+         </AccordionBody>
+         </Accordion>
+         <Accordion>
+         <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">Pie Chart</AccordionHeader>
+         <AccordionBody className="leading-6">
          <ConstructionSalesComponentPie data={constructionsalesdata} />
+         </AccordionBody>
+         </Accordion>
+         </AccordionList>
+         {/* <ConstructionSalesComponentRadial data={constructionsalesdata} /> */}
          <ConstructionTableComponent data={constructionsalesdata}/>
          </Card>
          {/* <FunnelChartHero data={funnelmatterdata[0]}/> */}
+
+         {/* staff */}
          <Card className="space-y-4 bg-gray-400">
          <Header title="Staff vs Total Profit"/>
+         <AccordionList>
+         <Accordion>
+         <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">Area Chart</AccordionHeader>
+         <AccordionBody className="leading-6">
          <StaffSalesComponent data={staffsalesdata} />
+         </AccordionBody>
+         </Accordion>
+         <Accordion>
+         <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">Line Chart</AccordionHeader>
+         <AccordionBody className="leading-6">
+         <StaffSalesComponentLine data={staffsalesdata} />
+         </AccordionBody>
+         </Accordion>
+         <Accordion>
+         <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">Bar Chart</AccordionHeader>
+         <AccordionBody className="leading-6">
          <StaffSalesComponentBar data={staffsalesdata}/>
+         </AccordionBody>
+         </Accordion>
+         <Accordion>
+         <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">Pie Chart</AccordionHeader>
+         <AccordionBody className="leading-6">
          <StaffSalesComponentPie data={staffsalesdata}/>
+         </AccordionBody>
+         </Accordion>
+         </AccordionList>
          <StaffTableComponent data={staffsalesdata}/>
          </Card>
       </div>
    );
 }
+
