@@ -73,6 +73,12 @@ import ConstructionSalesComponentLine from "@/app/ui/dashboard/Linecharts/Constr
 import MatterSalesComponentLine from "@/app/ui/dashboard/Linecharts/MatterProfitLine";
 import StaffSalesComponentLine from "@/app/ui/dashboard/Linecharts/StaffProfitLine";
 import ConstructionSalesComponentRadial from "@/app/ui/dashboard/Radialbarcharts/ConstructionProfitRadial";
+import ConstructionSalesComponentPolar from "@/app/ui/dashboard/PolarAreaCharts/ConstructionProfitPolarArea";
+import CustomerSalesComponentPolar from "@/app/ui/dashboard/PolarAreaCharts/CustomerProfitPolarArea";
+import MatterSalesComponentPolar from "@/app/ui/dashboard/PolarAreaCharts/MatterProfitPolarArea";
+import DepartmentSalesComponentPolar from "@/app/ui/dashboard/PolarAreaCharts/DepartmentProfitPolarArea";
+import StaffSalesComponentPolar from "@/app/ui/dashboard/PolarAreaCharts/StaffProfitPolarArea";
+import DepartmentSalesComponentBubble from "@/app/ui/dashboard/PolarAreaCharts/Departmentbubble";
 export default async function Home() {
    const salesOverTimeData: any =
       await fetchSalesTotalOverTime();
@@ -169,7 +175,14 @@ export default async function Home() {
          <DepartmentSalesComponentPie data={departmentsalesdata} />
          </AccordionBody>
          </Accordion>
+         <Accordion>
+         <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">PolarArea Chart</AccordionHeader>
+         <AccordionBody className="leading-6">
+         <DepartmentSalesComponentPolar data={departmentsalesdata} />
+         </AccordionBody>
+         </Accordion>
          </AccordionList>
+         {/* <DepartmentSalesComponentBubble data={departmentsalesdata} /> */}
          <DepartmentTableComponent data={departmentsalesdata}/>
          </Card>
 
@@ -199,6 +212,12 @@ export default async function Home() {
          <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">Pie Chart</AccordionHeader>
          <AccordionBody className="leading-6">
          <CustomerSalesComponentPie data={customersalesdata} />
+         </AccordionBody>
+         </Accordion>
+         <Accordion>
+         <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">PolerArea Chart</AccordionHeader>
+         <AccordionBody className="leading-6">
+         <CustomerSalesComponentPolar data={customersalesdata} />
          </AccordionBody>
          </Accordion>
          </AccordionList>
@@ -232,6 +251,12 @@ export default async function Home() {
          <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">Pie Chart</AccordionHeader>
          <AccordionBody className="leading-6">
          <MatterSalesComponentPie data={mattersalesdata}/>
+         </AccordionBody>
+         </Accordion>
+         <Accordion>
+         <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">PolarArea Chart</AccordionHeader>
+         <AccordionBody className="leading-6">
+         <MatterSalesComponentPolar data={mattersalesdata}/>
          </AccordionBody>
          </Accordion>
          </AccordionList>
@@ -268,6 +293,12 @@ export default async function Home() {
          <ConstructionSalesComponentPie data={constructionsalesdata} />
          </AccordionBody>
          </Accordion>
+         <Accordion>
+         <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">PolarArea Chart</AccordionHeader>
+         <AccordionBody className="leading-6">
+         <ConstructionSalesComponentPolar data={constructionsalesdata}/>
+         </AccordionBody>
+         </Accordion>
          </AccordionList>
          {/* <ConstructionSalesComponentRadial data={constructionsalesdata} /> */}
          <ConstructionTableComponent data={constructionsalesdata}/>
@@ -300,6 +331,12 @@ export default async function Home() {
          <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">Pie Chart</AccordionHeader>
          <AccordionBody className="leading-6">
          <StaffSalesComponentPie data={staffsalesdata}/>
+         </AccordionBody>
+         </Accordion>
+         <Accordion>
+         <AccordionHeader className="text-sm font-medium text-tremor-content-strong dark:text-dark-tremor-content-strong">PolarArea Chart</AccordionHeader>
+         <AccordionBody className="leading-6">
+         <StaffSalesComponentPolar data={staffsalesdata}/>
          </AccordionBody>
          </Accordion>
          </AccordionList>
