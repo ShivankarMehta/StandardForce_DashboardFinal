@@ -7,7 +7,7 @@ const valueFormatter = function(number) {
 export default function CumulativeSales(props:any){
 const {data}=props;
 return(
-  <Card>
+  <Card className="w-full border border-blue-700">
     <Title>Cumulative Sales Quantity Over Time</Title>
     <AreaChart
       className="h-72 mt-4"

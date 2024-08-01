@@ -123,7 +123,7 @@ const SalesComparison = ({ data }) => {
   };
 
   return (
-    <Card>
+    <Card className="w-full border border-blue-700">
       <Title>Sales Per Month</Title>
       {/* Filter buttons */}
       <div className="filter-buttons">

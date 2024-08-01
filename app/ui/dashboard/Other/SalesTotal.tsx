@@ -140,7 +140,7 @@ export default function AreaChartComponent({ data }: MyComponentProps) {
 
   // Render the component
   return (
-    <Card className='dark bg-gray-900 border border-gray-200'>
+    <Card className='dark bg-gray-900 border border-blue-700'>
       <div className='slider-container'>
         <ReactSlider
           className="horizontal-slider"

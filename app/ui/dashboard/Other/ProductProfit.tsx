@@ -19,7 +19,7 @@ export default function ProductProfitComponent({ data }: MyComponentProps) {
       }, [data]);
   // Render the component
   return (
-    <Card className='w-full'>
+    <Card className='w-full border border-blue-700'>
       <AreaChart
         className="h-96 mt-4 w-full"
         showAnimation={true}
@@ -28,7 +28,7 @@ export default function ProductProfitComponent({ data }: MyComponentProps) {
         maxValue={400000}
         index="product_name"
         categories={["total_profit"]}
-        colors={["pink", "cyan"]}
+        colors={["indigo", "cyan"]}
       />
     </Card>
   );

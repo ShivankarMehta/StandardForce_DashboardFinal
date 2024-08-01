@@ -27,7 +27,7 @@ export default function StaffSalesComponentBar({ data }: MyComponentProps) {
         maxValue={165000000}
         index="staff_name"
         categories={["total_profit"]}
-        colors={["teal", "cyan"]}
+        colors={["indigo", "cyan"]}
       />
     </Card>
   );

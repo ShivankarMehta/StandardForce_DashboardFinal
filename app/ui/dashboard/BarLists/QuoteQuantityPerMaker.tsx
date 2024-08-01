@@ -9,7 +9,7 @@ type MyComponentProps = {
 
 // Function to assign colors
 const getColor = (index: number) => {
-  const colors = "green"; // Define your color palette
+  const colors = "indigo"; // Define your color palette
   return colors;
 };
 

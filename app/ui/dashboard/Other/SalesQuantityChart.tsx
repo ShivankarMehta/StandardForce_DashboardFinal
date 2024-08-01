@@ -167,7 +167,7 @@ export default function SalesQuantityChartComponent({ data }: MyComponentProps) 
             yAxisWidth={100}
             index="date"
             categories={["Date", "TotalQuantity"]}
-            colors={["indigo", "cyan"]}
+            colors={["indigo", "indigo"]}
          />
       </Card>
    );

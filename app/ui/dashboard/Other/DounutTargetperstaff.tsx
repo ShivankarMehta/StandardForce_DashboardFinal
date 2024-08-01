@@ -4,7 +4,7 @@ import { Card, DonutChart, Title } from "@tremor/react";
       
       export default function DonutCharttarget(props:any){
         return(
-        <Card className="max-w-lg">
+        <Card className="max-w-lg border border-blue-700">
           <Title>Target Per Staff</Title>
           <DonutChart
             className="mt-6"

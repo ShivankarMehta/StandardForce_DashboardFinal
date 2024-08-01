@@ -27,7 +27,7 @@ export default function MatterSalesComponentBar({ data }: MyComponentProps) {
         maxValue={9000000}
         index="matter_name"
         categories={["total_profit"]}
-        colors={["cyan","indigo"]}
+        colors={["indigo", "cyan"]}
       />
     </Card>
   );

@@ -27,7 +27,7 @@ export default function ProductsPerMakersComponentBar({ data }: MyComponentProps
         maxValue={100000}
         index="maker_name"
         categories={["Quote_Quantity"]}
-        colors={["green","indigo"]}
+        colors={["indigo", "cyan"]}
       />
     </Card>
   );

@@ -27,7 +27,7 @@ export default function QuotePerProductComponentBar({ data }: MyComponentProps) 
         maxValue={100000}
         index="product_name"
         categories={["Quote_Quantity"]}
-        colors={["blue","indigo"]}
+        colors={["indigo", "cyan"]}
       />
     </Card>
   );

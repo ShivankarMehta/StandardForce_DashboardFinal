@@ -18,7 +18,7 @@ export default function MatterSalesComponent({ data }: MyComponentProps) {
       }, [data]);
   // Render the component
   return (
-    <Card className='w-full'>
+    <Card className='w-full border border-blue-700'>
       <AreaChart
         className="h-96 mt-4 w-full text-xs"
         showAnimation={true}
@@ -27,7 +27,7 @@ export default function MatterSalesComponent({ data }: MyComponentProps) {
         maxValue={9000000}
         index="matter_name"
         categories={["total_profit"]}
-        colors={["cyan","indigo"]}
+        colors={["indigo", "cyan"]}
       />
     </Card>
   );

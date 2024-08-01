@@ -15,7 +15,7 @@ export default function TargetOverTimeComponent({ data }: MyComponentProps) {
 
   // Render the component
   return (
-    <Card className='dark bg-gray-900 border border-gray-200'>
+    <Card className='dark bg-gray-900 border border-blue-700'>
       <Title>Sales Target Over Time</Title>
       <AreaChart
         className="h-96 mt-4"

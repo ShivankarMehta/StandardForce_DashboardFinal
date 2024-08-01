@@ -27,7 +27,7 @@ export default function ProductProfitComponentLine({ data }: MyComponentProps) {
         maxValue={400000}
         index="product_name"
         categories={["total_profit"]}
-        colors={["pink", "cyan"]}
+        colors={["indigo", "cyan"]}
       />
     </Card>
   );

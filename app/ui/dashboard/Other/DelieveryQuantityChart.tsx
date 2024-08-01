@@ -349,7 +349,7 @@ export default function DeliveryQuantityChartComponent({ data }: MyComponentProp
                 yAxisWidth={100}
                 index="date"
                 categories={["Date", "TotalDeliveryQuantity"]}
-                colors={["cyan","indigo"]}
+                colors={["indigo", "indigo"]}
             />
         </Card>
     );

@@ -27,7 +27,7 @@ export default function ProductsPerSupplierComponentBar({ data }: MyComponentPro
         maxValue={100000}
         index="supplier_name"
         categories={["Quote_Quantity"]}
-        colors={["stone","indigo"]}
+        colors={["indigo", "cyan"]}
       />
     </Card>
   );

@@ -28,7 +28,7 @@ export default function DepartmentSalesComponent({ data }: MyComponentProps) {
         maxValue={400000000}
         index="department_name"
         categories={["total_profit"]}
-        colors={["stone", "cyan"]}
+        colors={["indigo", "cyan"]}
       />
     </Card>
   );

@@ -27,7 +27,7 @@ export default function SalesPerDepartmentBar({ data }: MyComponentProps) {
         maxValue={1300000000}
         index="department_name"
         categories={["total_sales"]}
-        colors={["stone", "cyan"]}
+        colors={["indigo", "cyan"]}
       />
     </Card>
   );

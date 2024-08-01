@@ -27,7 +27,7 @@ export default function ConstructionSalesComponentLine({ data }: MyComponentProp
         maxValue={220000000}
         index="construction_name"
         categories={["total_profit"]}
-        colors={["rose", "cyan"]}
+        colors={["indigo", "cyan"]}
       />
     </Card>
   );
