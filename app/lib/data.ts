@@ -21,31 +21,69 @@ export async function globalfilter(): Promise<any> {
       JOIN 
         tomsms_db.m_staff ms ON ts.matter_staff_id = ms.id;
     `);
-    console.log("Query Result:", values); // Debug the result here
     return values;
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch filter values.");
   }
 }
-export async function salesTotal():Promise<any>{
-  noStore();
-  console.log("Fetching TotalSales data...");
-  try{
-   const [values]=(
-    await pool.query(
-      `
-      SELECT SUM(sales_total) as Sales, SUM(sales_quantity) as Quantity, SUM(sales_total-cost_total) as Profit FROM tomsms_db.t_sales_detail;
-      `
-    )
-   )
-   return values;
-  }
-  catch(error){
+
+export async function salesTotal(filters): Promise<any> {
+  try {
+    const { year, department, staff, monthRange } = filters;
+
+    // Build dynamic filter conditions
+    const conditions: string[] = [];
+    if (year) {
+      conditions.push(`YEAR(tsd.sales_date) = ${year}`);
+    }
+    if (department.length > 0) {
+      const departments = department.map((d) => `'${d}'`).join(",");
+      conditions.push(`md.department_name IN (${departments})`);
+    }
+    if (staff.length > 0) {
+      const staffList = staff.map((s) => `'${s}'`).join(",");
+      conditions.push(`ms.staff_name IN (${staffList})`);
+    }
+    if (monthRange) {
+      conditions.push(`MONTH(tsd.sales_date) BETWEEN ${monthRange[0]} AND ${monthRange[1]}`);
+    }
+
+    // Combine all conditions into a WHERE clause
+    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
+
+    // Final query with JOINs and aggregation
+    const [values] = await pool.query(`
+      SELECT 
+        SUM(tsd.sales_total) AS Sales, 
+        SUM(tsd.sales_quantity) AS Quantity, 
+        SUM(tsd.sales_total - tsd.cost_total) AS Profit 
+      FROM 
+        tomsms_db.t_sales_detail tsd
+      JOIN 
+        tomsms_db.t_sales ts ON ts.id = tsd.id
+      JOIN
+        tomsms_db.m_department md ON ts.matter_department_id = md.id
+      JOIN 
+        tomsms_db.m_staff ms ON ts.matter_staff_id = ms.id
+      ${whereClause};
+    `);
+
+    // Ensure result is returned as an array
+    if (Array.isArray(values)) {
+      return values.length > 0 ? values : [{ Sales: 0, Quantity: 0, Profit: 0 }];
+    }
+
+    // Handle non-array result
+    return values ? [values] : [{ Sales: 0, Quantity: 0, Profit: 0 }];
+  } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to Total Sales Value");
+    throw new Error("Failed to fetch sales data");
   }
 }
+
+
+
 export async function fetchSalesTotalOverTime(): Promise<SalesTotalOverTime[]> {
   noStore();
   console.log("Fetching SalesOverTime data...");

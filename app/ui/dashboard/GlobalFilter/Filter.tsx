@@ -3,16 +3,14 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react';
 import ReactSlider from 'react-slider';
 import '../../styles/slider.css';
+import { useFilterContext } from '@/app/Context/FilterContext';
 
-export default function GlobalFilter({ data }) {
+export default function GlobalFilter({ data}) {
   // Ensure data is defined and valid
   const validData = Array.isArray(data) ? data : [];
 
   // States for filters
-  const [selectedYear, setSelectedYear] = useState<number | undefined>(undefined);
-  const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
-  const [selectedStaff, setSelectedStaff] = useState<string[]>([]);
-  const [range, setRange] = useState([1, 12]);
+  const { filters, setFilters } = useFilterContext();
 
   const [isDepartmentMenuOpen, setDepartmentMenuOpen] = useState(false);
   const [isStaffMenuOpen, setStaffMenuOpen] = useState(false);
@@ -27,7 +25,7 @@ export default function GlobalFilter({ data }) {
   const years = useMemo(() => {
     const uniqueYears = new Set(
       validData.map((item) => {
-        const date = new Date(item.sales_date); // Ensure sales_date is converted to Date
+        const date = new Date(item.sales_date);
         const year = date.getFullYear();
         return fiscalMonthIndex(date) < 3 ? year - 1 : year;
       })
@@ -61,22 +59,18 @@ export default function GlobalFilter({ data }) {
     };
   }, []);
 
-  const toggleDepartment = (value: string) => {
-    setSelectedDepartments((prev) =>
-      prev.includes(value)
-        ? prev.filter((dept) => dept !== value) // Remove if already selected
-        : [...prev, value] // Add if not selected
-    );
+  const toggleSelection = (value: string, type: 'department' | 'staff') => {
+    setFilters((prev) => {
+      const selected = prev[type];
+      const newSelection = selected.includes(value)
+        ? selected.filter((item) => item !== value)
+        : [...selected, value];
+
+      return { ...prev, [type]: newSelection };
+    });
   };
 
-  // Toggle selection for staff
-  const toggleStaff = (value: string) => {
-    setSelectedStaff((prev) =>
-      prev.includes(value)
-        ? prev.filter((staff) => staff !== value) // Remove if already selected
-        : [...prev, value] // Add if not selected
-    );
-  };
+  
 
   return (
     <div className="p-6 shadow-md rounded-lg">
@@ -85,8 +79,12 @@ export default function GlobalFilter({ data }) {
         <div className="flex flex-col space-y-2">
           <label className="text-sm font-medium">Select Year</label>
           <select
-            value={selectedYear || ''}
-            onChange={(e) => setSelectedYear(Number(e.target.value))}
+            value={filters.year || ''}
+            onChange={(e) =>
+              setFilters((prev) => ({
+                ...prev,
+                year: e.target.value ? Number(e.target.value) : undefined,
+              }))}
             className="w-[180px] bg-gray-800 text-white p-2 rounded-md"
           >
             <option value="" disabled>Select Year</option>
@@ -102,16 +100,14 @@ export default function GlobalFilter({ data }) {
         <div className="flex flex-col space-y-2">
           <label className="text-sm font-medium">Select Month</label>
           <ReactSlider
-            defaultValue={range}
+            value={filters.monthRange}
+            onChange={(value) => setFilters((prev) => ({ ...prev, monthRange: value as [number, number] }))}
             thumbClassName="thumb"
             trackClassName="track"
             ariaLabel={['Lower thumb', 'Upper thumb']}
-            value={range}
-            onChange={setRange}
             max={12}
             min={1}
             step={1}
-            minDistance={0}
             className="horizontal-slider mt-2"
           />
           <div className="month-labels flex justify-between mt-2 text-gray-800">
@@ -139,18 +135,18 @@ export default function GlobalFilter({ data }) {
               <div className="text-gray-900 font-semibold">Departments</div>
               <hr className="my-2 border-gray-600" />
               {departments.map((dept) => (
-                <div key={dept} className={`flex items-center space-x-2 p-2 rounded-md ${selectedDepartments.includes(dept) ? 'bg-slate-800 border-2 border-white': ''}`}>
+                <div key={dept} className={`flex items-center space-x-2 p-2 rounded-md ${filters.department.includes(dept) ? 'bg-slate-800 border-2 border-white': ''}`}>
                   <input
                     type="checkbox"
                     id={dept}
-                    checked={selectedDepartments.includes(dept)}
-                    onChange={() => toggleDepartment(dept)}
+                    checked={filters.department.includes(dept)}
+                    onChange={() => toggleSelection(dept, 'department')}
                     className="cursor-pointer"
                   />
                   <label
                     htmlFor={dept}
                     className={`cursor-pointer ${
-                      selectedDepartments.includes(dept) ? 'text-gray-100' : 'text-gray-900'
+                      filters.department.includes(dept) ? 'text-gray-100' : 'text-gray-900'
                     }`}
                   >
                     {dept}
@@ -174,18 +170,18 @@ export default function GlobalFilter({ data }) {
               <div className="text-gray-900 font-semibold">Staff</div>
               <hr className="my-2 border-gray-600" />
               {staff.map((staffName) => (
-                <div key={staffName} className={`flex items-center space-x-2 p-2 rounded-md ${selectedStaff.includes(staffName) ? 'bg-slate-800 border-2 border-white': ''}`}>
+                <div key={staffName} className={`flex items-center space-x-2 p-2 rounded-md ${filters.staff.includes(staffName) ? 'bg-slate-800 border-2 border-white': ''}`}>
                   <input
                     type="checkbox"
                     id={staffName}
-                    checked={selectedStaff.includes(staffName)}
-                    onChange={() => toggleStaff(staffName)}
+                    checked={filters.staff.includes(staffName)}
+                    onChange={() => toggleSelection(staffName, 'staff')}
                     className="cursor-pointer"
                   />
                   <label
                     htmlFor={staffName}
                     className={`cursor-pointer ${
-                      selectedStaff.includes(staffName) ? 'text-gray-100' : 'text-gray-900'
+                      filters.staff.includes(staffName) ? 'text-gray-100' : 'text-gray-900'
                     }`}
                   >
                     {staffName}
