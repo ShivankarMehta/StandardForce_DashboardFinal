@@ -7,7 +7,6 @@ import { SalesTotalOverTime } from "./definitions";
 
 export async function globalfilter(): Promise<any> {
   noStore();
-  console.log("Fetching Filter Data");
   try {
     const [values] = await pool.query(`
       SELECT 
@@ -32,21 +31,33 @@ export async function salesTotal(filters): Promise<any> {
   try {
     const { year, department, staff, monthRange } = filters;
 
+    // Get the current month and year
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1; // Months are zero-based, so add 1
+
     // Build dynamic filter conditions
     const conditions: string[] = [];
-    if (year) {
-      conditions.push(`YEAR(tsd.sales_date) = ${year}`);
+
+    // Default to the current year if no year filter is provided
+    if (year || year === undefined) {
+      conditions.push(`YEAR(tsd.sales_date) = ${year || currentYear}`);
     }
-    if (department.length > 0) {
+
+    if (department && department.length > 0) {
       const departments = department.map((d) => `'${d}'`).join(",");
       conditions.push(`md.department_name IN (${departments})`);
     }
-    if (staff.length > 0) {
+
+    if (staff && staff.length > 0) {
       const staffList = staff.map((s) => `'${s}'`).join(",");
       conditions.push(`ms.staff_name IN (${staffList})`);
     }
-    if (monthRange) {
+
+    // Default to the current month if no monthRange is provided
+    if (monthRange && monthRange.length > 0) {
       conditions.push(`MONTH(tsd.sales_date) BETWEEN ${monthRange[0]} AND ${monthRange[1]}`);
+    } else {
+      conditions.push(`MONTH(tsd.sales_date) = ${currentMonth}`);
     }
 
     // Combine all conditions into a WHERE clause

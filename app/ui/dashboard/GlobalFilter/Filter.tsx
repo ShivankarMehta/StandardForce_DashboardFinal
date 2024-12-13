@@ -20,6 +20,8 @@ export default function GlobalFilter({ data}) {
 
   const months = ["Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep"];
   const fiscalMonthIndex = (date: Date) => (date.getMonth() + 3) % 12;
+  const currentYear = new Date().getFullYear();
+  const currentMonth = fiscalMonthIndex(new Date());
 
   // Extract unique years, departments, and staff from the data
   const years = useMemo(() => {
@@ -69,13 +71,31 @@ export default function GlobalFilter({ data}) {
       return { ...prev, [type]: newSelection };
     });
   };
+ 
 
+  const resetFilters=() =>{
+    setFilters({
+      year: currentYear,
+      monthRange: [currentMonth, currentMonth], // Reset to current month
+      department: departments, // Clear all selected departments
+      staff: staff, // Clear all selected staff
+    });
+  }
   
 
   return (
-    <div className="p-6 shadow-md rounded-lg">
+    <div className="p-6 shadow-md border-2 border-slate-800 rounded-lg">
+     <div className="flex justify-end mb-4">
+      <button
+      onClick={resetFilters}
+      className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
+      >
+        Refresh
+      </button>
+     </div>
+
       {/* Year Selector */}
-      <div className="flex flex-col space-y-4">
+      <div className="flex space-x-4">
         <div className="flex flex-col space-y-2">
           <label className="text-sm font-medium">Select Year</label>
           <select
@@ -96,42 +116,18 @@ export default function GlobalFilter({ data}) {
           </select>
         </div>
 
-        {/* Month Slider */}
-        <div className="flex flex-col space-y-2">
-          <label className="text-sm font-medium">Select Month</label>
-          <ReactSlider
-            value={filters.monthRange}
-            onChange={(value) => setFilters((prev) => ({ ...prev, monthRange: value as [number, number] }))}
-            thumbClassName="thumb"
-            trackClassName="track"
-            ariaLabel={['Lower thumb', 'Upper thumb']}
-            max={12}
-            min={1}
-            step={1}
-            className="horizontal-slider mt-2"
-          />
-          <div className="month-labels flex justify-between mt-2 text-gray-800">
-            {months.map((month, index) => (
-              <div key={index} className="text-xs text-center">
-                {month}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Department and Staff Selectors */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+        {/* Department and Staff Selectors */}
+      <div className="flex space-x-4 mt-8 ">
         {/* Department Selector */}
         <div className="relative flex flex-col space-y-12" ref={departmentMenuRef}>
           <button
-            className="w-[100%] p-2 bg-gray-800 text-white rounded-md focus:ring focus:ring-blue-500"
+            className="w-[300px] p-2 bg-gray-800 text-white rounded-md focus:ring focus:ring-blue-500"
             onClick={() => setDepartmentMenuOpen((prev) => !prev)}
           >
             Select Departments
           </button>
           {isDepartmentMenuOpen && (
-            <div className="absolute z-50 w-[100%] p-4 rounded-md shadow-md border bg-white border-gray-700">
+            <div className="absolute z-50 w-full p-4 rounded-md shadow-md border bg-white border-gray-700">
               <div className="text-gray-900 font-semibold">Departments</div>
               <hr className="my-2 border-gray-600" />
               {departments.map((dept) => (
@@ -160,7 +156,7 @@ export default function GlobalFilter({ data}) {
         {/* Staff Selector */}
         <div className="relative flex flex-col space-y-12" ref={staffMenuRef}>
           <button
-            className="w-[100%] p-2 bg-gray-800 text-white rounded-md focus:ring focus:ring-blue-500"
+            className="w-[300px] p-2 bg-gray-800 text-white rounded-md focus:ring focus:ring-blue-500"
             onClick={() => setStaffMenuOpen((prev) => !prev)}
           >
             Select Staff
@@ -192,6 +188,29 @@ export default function GlobalFilter({ data}) {
           )}
         </div>
       </div>
+      </div>
+       {/* Month Slider */}
+       <div className="flex flex-col space-y-2">
+          <label className="text-sm font-medium">Select Month</label>
+          <ReactSlider
+            value={filters.monthRange}
+            onChange={(value) => setFilters((prev) => ({ ...prev, monthRange: value as [number, number] }))}
+            thumbClassName="thumb"
+            trackClassName="track"
+            ariaLabel={['Lower thumb', 'Upper thumb']}
+            max={12}
+            min={1}
+            step={1}
+            className="horizontal-slider mt-2"
+          />
+          <div className="month-labels flex justify-between mt-2 text-gray-800">
+            {months.map((month, index) => (
+              <div key={index} className="text-xs text-center">
+                {month}
+              </div>
+            ))}
+          </div>
+        </div>
     </div>
   );
 }
