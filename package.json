@@ -29,6 +29,7 @@
     "mapbox-gl": "^3.5.2",
     "mysql2": "^3.6.5",
     "next": "^14.2.14",
+    "nextjs-toploader": "^3.7.15",
     "number-flow": "^0.4.1",
     "react": "^18",
     "react-apexcharts": "^1.4.1",

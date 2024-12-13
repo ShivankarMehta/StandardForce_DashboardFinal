@@ -11,6 +11,12 @@ export default function GlobalFilter({ data}) {
 
   // States for filters
   const { filters, setFilters } = useFilterContext();
+  const [temporaryFilters, setTemporaryFilters]= useState({
+    year: filters.year || null,
+    monthRange: filters.monthRange || [1, 12],
+    department: filters.department || [],
+    staff: filters.staff || [],
+  })
 
   const [isDepartmentMenuOpen, setDepartmentMenuOpen] = useState(false);
   const [isStaffMenuOpen, setStaffMenuOpen] = useState(false);
@@ -35,6 +41,8 @@ export default function GlobalFilter({ data}) {
     return Array.from(uniqueYears).sort((a, b) => a - b);
   }, [validData]);
 
+
+
   const departments = useMemo(() => {
     const uniqueDepartments = new Set(validData.map((item) => item.department_name));
     return Array.from(uniqueDepartments);
@@ -44,6 +52,27 @@ export default function GlobalFilter({ data}) {
     const uniqueStaff = new Set(validData.map((item) => item.staff_name));
     return Array.from(uniqueStaff);
   }, [validData]);
+
+
+  useEffect(()=>{
+    setFilters({
+      year: currentYear,
+      monthRange: [currentMonth, currentMonth],
+      department: departments,
+      staff: staff,
+    });
+    setTemporaryFilters({
+      year: currentYear,
+      monthRange: [currentMonth, currentMonth],
+      department: departments,
+      staff: staff,
+    })
+  }, [currentYear, currentMonth, departments, staff, setFilters]);
+
+  const saveFilters = () => {
+    setFilters(temporaryFilters);
+  };
+
 
   // Event listeners to close menus when clicking outside
   useEffect(() => {
@@ -62,7 +91,7 @@ export default function GlobalFilter({ data}) {
   }, []);
 
   const toggleSelection = (value: string, type: 'department' | 'staff') => {
-    setFilters((prev) => {
+    setTemporaryFilters((prev) => {
       const selected = prev[type];
       const newSelection = selected.includes(value)
         ? selected.filter((item) => item !== value)
@@ -72,25 +101,41 @@ export default function GlobalFilter({ data}) {
     });
   };
  
-
-  const resetFilters=() =>{
+   useEffect(() => {
     setFilters({
       year: currentYear,
-      monthRange: [currentMonth, currentMonth], // Reset to current month
-      department: departments, // Clear all selected departments
-      staff: staff, // Clear all selected staff
+      monthRange: [currentMonth, currentMonth], // Set to current month
+      department: departments, // Select all departments
+      staff: staff, // Select all staff
     });
-  }
+  }, [currentYear, currentMonth, departments, staff, setFilters]);
+
+    const resetFilters = () => {
+    const defaultFilters = {
+      year: currentYear,
+      monthRange: [currentMonth, currentMonth],
+      department: departments,
+      staff: staff,
+    };
+    setTemporaryFilters(defaultFilters);
+    setFilters(defaultFilters);
+  };
   
 
   return (
     <div className="p-6 shadow-md border-2 border-slate-800 rounded-lg">
      <div className="flex justify-end mb-4">
+     <button
+          onClick={saveFilters}
+          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition mr-2"
+        >
+          Save
+        </button>
       <button
       onClick={resetFilters}
       className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
       >
-        Refresh
+        Reload
       </button>
      </div>
 
@@ -99,11 +144,11 @@ export default function GlobalFilter({ data}) {
         <div className="flex flex-col space-y-2">
           <label className="text-sm font-medium">Select Year</label>
           <select
-            value={filters.year || ''}
+            value={temporaryFilters.year || ''}
             onChange={(e) =>
-              setFilters((prev) => ({
+              setTemporaryFilters((prev) => ({
                 ...prev,
-                year: e.target.value ? Number(e.target.value) : undefined,
+                year: e.target.value ? Number(e.target.value) : null,
               }))}
             className="w-[180px] bg-gray-800 text-white p-2 rounded-md"
           >
@@ -131,18 +176,18 @@ export default function GlobalFilter({ data}) {
               <div className="text-gray-900 font-semibold">Departments</div>
               <hr className="my-2 border-gray-600" />
               {departments.map((dept) => (
-                <div key={dept} className={`flex items-center space-x-2 p-2 rounded-md ${filters.department.includes(dept) ? 'bg-slate-800 border-2 border-white': ''}`}>
+                <div key={dept} className={`flex items-center space-x-2 p-2 rounded-md ${temporaryFilters.department.includes(dept) ? 'bg-slate-800 border-2 border-white': ''}`}>
                   <input
                     type="checkbox"
                     id={dept}
-                    checked={filters.department.includes(dept)}
+                    checked={temporaryFilters.department.includes(dept)}
                     onChange={() => toggleSelection(dept, 'department')}
                     className="cursor-pointer"
                   />
                   <label
                     htmlFor={dept}
                     className={`cursor-pointer ${
-                      filters.department.includes(dept) ? 'text-gray-100' : 'text-gray-900'
+                      temporaryFilters.department.includes(dept) ? 'text-gray-100' : 'text-gray-900'
                     }`}
                   >
                     {dept}
@@ -166,18 +211,18 @@ export default function GlobalFilter({ data}) {
               <div className="text-gray-900 font-semibold">Staff</div>
               <hr className="my-2 border-gray-600" />
               {staff.map((staffName) => (
-                <div key={staffName} className={`flex items-center space-x-2 p-2 rounded-md ${filters.staff.includes(staffName) ? 'bg-slate-800 border-2 border-white': ''}`}>
+                <div key={staffName} className={`flex items-center space-x-2 p-2 rounded-md ${temporaryFilters.staff.includes(staffName) ? 'bg-slate-800 border-2 border-white': ''}`}>
                   <input
                     type="checkbox"
                     id={staffName}
-                    checked={filters.staff.includes(staffName)}
+                    checked={temporaryFilters.staff.includes(staffName)}
                     onChange={() => toggleSelection(staffName, 'staff')}
                     className="cursor-pointer"
                   />
                   <label
                     htmlFor={staffName}
                     className={`cursor-pointer ${
-                      filters.staff.includes(staffName) ? 'text-gray-100' : 'text-gray-900'
+                      temporaryFilters.staff.includes(staffName) ? 'text-gray-100' : 'text-gray-900'
                     }`}
                   >
                     {staffName}
@@ -193,14 +238,13 @@ export default function GlobalFilter({ data}) {
        <div className="flex flex-col space-y-2">
           <label className="text-sm font-medium">Select Month</label>
           <ReactSlider
-            value={filters.monthRange}
-            onChange={(value) => setFilters((prev) => ({ ...prev, monthRange: value as [number, number] }))}
+            value={temporaryFilters.monthRange}
+            onChange={(value) => setTemporaryFilters((prev) => ({ ...prev, monthRange: value as [number, number] }))}
             thumbClassName="thumb"
             trackClassName="track"
             ariaLabel={['Lower thumb', 'Upper thumb']}
             max={12}
             min={1}
-            step={1}
             className="horizontal-slider mt-2"
           />
           <div className="month-labels flex justify-between mt-2 text-gray-800">
