@@ -1,7 +1,9 @@
-import { globalfilter, salesTotal } from "../../lib/data";
+import { globalfilter, salesTotal, targetValue, fetchMovingSalesTotalOverTime } from "../../lib/data";
 import DashboardClientWrapper from "./DashboardClientWrapper";
-
+import { Card } from "@/components/ui/card";
+import MovingSalesAverageComponent from "@/app/ui/dashboard/MovingAverageChart/MovingAverageSalesChart";
 export default async function Home() {
+  const movingAverageSalesData: any = await fetchMovingSalesTotalOverTime();
   const filterData = await globalfilter();
 // Get the current date
 const currentDate = new Date();
@@ -17,13 +19,18 @@ const initialFilters = {
 };
 
 const initialSalesData = await salesTotal(initialFilters);
+const initialTargetData = await targetValue(initialFilters);
 
   return (
     <div>
       <DashboardClientWrapper
         initialFilterData={filterData}
         initialSalesData={initialSalesData}
+        initialTargetData={initialTargetData}
       />
+      <Card className="m-6 mt-1">
+      <MovingSalesAverageComponent data={movingAverageSalesData}/>
+      </Card>
     </div>
   );
 }

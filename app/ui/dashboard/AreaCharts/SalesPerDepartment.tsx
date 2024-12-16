@@ -33,3 +33,5 @@ export default function SalesPerDepartment({ data }: MyComponentProps) {
     </Card>
   );
 }
+
+

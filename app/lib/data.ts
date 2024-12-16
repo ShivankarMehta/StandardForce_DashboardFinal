@@ -93,6 +93,147 @@ export async function salesTotal(filters): Promise<any> {
   }
 }
 
+export async function targetValue(filters): Promise<any> {
+  try {
+    const { year, monthRange, staff } = filters;
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1;
+
+    const effectiveYear = year || currentYear;
+    const effectiveMonthRange = monthRange || [currentMonth, currentMonth];
+
+    const conditions: string[] = [];
+
+    // Add year condition
+    conditions.push(`SUBSTRING(tst.target_ym, 1, 4) = ?`); // Use parameterized query
+    const queryParams = [effectiveYear.toString()]; // Add year as a string
+
+    // Add staff condition
+    if (staff && staff.length > 0) {
+      const staffList = staff.map(() => '?').join(',');
+      conditions.push(`ms.staff_name IN (${staffList})`);
+      queryParams.push(...staff); // Add staff names to query parameters
+    }
+
+    // Add month range condition
+    if (monthRange && monthRange.length > 0) {
+      conditions.push(`SUBSTRING(tst.target_ym, 5, 2) BETWEEN ? AND ?`);
+      queryParams.push(
+        effectiveMonthRange[0].toString().padStart(2, '0'),
+        effectiveMonthRange[1].toString().padStart(2, '0')
+      );
+    } else {
+      conditions.push(`MONTH(tsd.sales_date) = ?`);
+      queryParams.push(currentMonth.toString());
+    }
+
+    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+
+    // Execute parameterized query
+    const [values] = await pool.query(
+      `
+      SELECT tst.target_ym,
+             SUBSTRING(tst.target_ym, 1, 4) AS year, 
+             SUBSTRING(tst.target_ym, 5, 2) AS month, 
+             SUM(tst.target_price) as target, 
+             ms.staff_name 
+      FROM t_salestarget_month tst
+      JOIN m_staff ms ON ms.id = tst.staff_id
+      ${whereClause};
+      `,
+      queryParams
+    );
+
+    if (Array.isArray(values)) {
+      return values.length > 0 ? values : [{ target: 0 }];
+    }
+
+    return values ? [values] : [{ target: 0 }];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch the target data');
+  }
+}
+ 
+export async function fetchMovingSalesTotalOverTime() : Promise<any> {
+  noStore();
+  console.log("Fetching MovingSalesAverage Data...");
+  try{
+    const [rows]= (await pool.query(`
+       WITH Monthly_Sales AS (
+    -- Step 1: Group sales by month and supplier
+    SELECT 
+        DATE_FORMAT(sd.sales_date, '%Y-%m-01') AS sales_month, -- First day of each month
+        ms.supplier_name,
+        SUM(sd.sales_total) AS monthly_sales_total
+    FROM t_sales_detail sd
+    INNER JOIN t_quote_detail qd 
+        ON sd.quote_detail_id = qd.id
+    INNER JOIN m_supplier ms
+        ON qd.supplier_id = ms.id
+    GROUP BY DATE_FORMAT(sd.sales_date, '%Y-%m-01'), ms.supplier_name
+),
+Annual_Sales AS (
+    -- Step 2: Calculate annual sales total for each supplier for the past 12 months
+    SELECT 
+        ms.sales_month,
+        ms.supplier_name,
+        (
+            SELECT SUM(ms2.monthly_sales_total)
+            FROM Monthly_Sales ms2
+            WHERE ms2.supplier_name = ms.supplier_name
+              AND ms2.sales_month >= DATE_FORMAT(DATE_SUB(ms.sales_month, INTERVAL 12 MONTH), '%Y-%m-01')
+              AND ms2.sales_month < ms.sales_month
+        ) AS annual_sales_total
+    FROM Monthly_Sales ms
+),
+Monthly_Change AS (
+    -- Step 3: Calculate the percentage change between the current month's annual total and the previous month's annual total
+    SELECT 
+        sales_month,
+        supplier_name,
+        annual_sales_total,
+        LAG(annual_sales_total) OVER (PARTITION BY supplier_name ORDER BY sales_month) AS prev_annual_sales_total,
+        CASE 
+            WHEN LAG(annual_sales_total) OVER (PARTITION BY supplier_name ORDER BY sales_month) IS NOT NULL
+            THEN ROUND(((annual_sales_total - LAG(annual_sales_total) OVER (PARTITION BY supplier_name ORDER BY sales_month))
+                / LAG(annual_sales_total) OVER (PARTITION BY supplier_name ORDER BY sales_month)) * 100, 2)
+            ELSE 0
+        END AS percentage_increase
+    FROM Annual_Sales
+),
+Top_10_Suppliers AS (
+    -- Step 4: Rank suppliers based on the highest percentage increase for the previous month
+    SELECT 
+        supplier_name,
+        MAX(percentage_increase) AS max_percentage_increase
+    FROM Monthly_Change
+    WHERE sales_month = DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%Y-%m-01') -- Previous month
+    GROUP BY supplier_name
+    ORDER BY max_percentage_increase DESC
+    LIMIT 10
+)
+-- Final Output: Annual sales totals for top 10 suppliers
+SELECT 
+    mc.sales_month,
+    mc.supplier_name,
+    mc.annual_sales_total,
+    mc.percentage_increase
+FROM Monthly_Change mc
+INNER JOIN Top_10_Suppliers ts 
+    ON mc.supplier_name = ts.supplier_name
+ORDER BY mc.sales_month, mc.percentage_increase DESC;
+      `
+    )) 
+    return rows;
+  }
+  catch(error){
+    console.log(error);
+    throw new Error("Failed to fetch salesmoving value over Time data.")
+  }
+}
+
+
 
 
 export async function fetchSalesTotalOverTime(): Promise<SalesTotalOverTime[]> {
