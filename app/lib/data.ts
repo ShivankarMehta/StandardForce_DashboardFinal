@@ -285,17 +285,17 @@ export async function fetchTargetSalesOverTime(): Promise<any> {
     const [rows] = await pool.query(`
          SELECT 
     DATE_FORMAT(STR_TO_DATE(target_ym, '%Y%m'), '%Y-%m') AS Date, 
-    SUM(target_price) as Target 
-FROM 
-    t_salestarget_month
-LEFT JOIN 
-    m_staff 
-ON 
-    t_salestarget_month.staff_id = m_staff.id
-GROUP BY 
-    Date
-ORDER BY 
-    Date;
+        SUM(target_price) as Target 
+    FROM 
+        t_salestarget_month
+    LEFT JOIN 
+        m_staff 
+    ON 
+        t_salestarget_month.staff_id = m_staff.id
+    GROUP BY 
+        Date
+    ORDER BY 
+        Date;
     `);
     // console.log(rows);
     return rows;

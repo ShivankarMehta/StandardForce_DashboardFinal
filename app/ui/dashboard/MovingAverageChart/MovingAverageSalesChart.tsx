@@ -208,13 +208,13 @@ export default function MovingSalesAverageComponent({
       <div className="flex justify-between m-4">
         {/* Supplier Dropdown */}
         <MultiSelect
-          className="w-1/2"
+          className="w-1/2 dark"
           value={selectedSuppliers}
           onValueChange={setSelectedSuppliers}
           placeholder="Select Suppliers"
         >
           {supplierList.map((supplier) => (
-            <MultiSelectItem key={supplier} value={supplier} className={`${selectedSuppliers.includes(supplier) ? 'bg-slate-400 border-2 border-white text-slate-100': ''}`}>
+            <MultiSelectItem key={supplier} value={supplier} >
               {supplier}
             </MultiSelectItem>
           ))}
@@ -224,7 +224,7 @@ export default function MovingSalesAverageComponent({
         <Select
           value={selectedTimeline}
           onValueChange={setSelectedTimeline}
-          className="w-48"
+          className="w-48 dark"
         >
           <SelectItem value="6_months">Last 6 Months</SelectItem>
           <SelectItem value="12_months">Last 12 Months</SelectItem>
