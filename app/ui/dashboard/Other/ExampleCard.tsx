@@ -1,4 +1,4 @@
-'use Client'
+'use client'
 import React, {useState} from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input"
@@ -7,7 +7,7 @@ type ExampleCardProps = {
   totalSales: number;
   totalQuantity: number;
   totalProfit: number;
-  totalTarget:number;
+  totalTarget?:any;
 };
 import { ProgressBar } from "@tremor/react";
 const ExampleCard: React.FC<ExampleCardProps> = ({
